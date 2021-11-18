@@ -12,3 +12,6 @@ def login(request):
 
 def board_list(request):
     return render(request, 'board_list.html')
+
+def board_register(request):
+    return render(request, 'board_register.html')
