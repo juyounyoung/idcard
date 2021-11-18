@@ -1,0 +1,58 @@
+{% load static%}
+
+<DOCTYPE HTML5>
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'css/board.css' %}">
+    <title>학생증사전등록시스템 게시판</title>
+</head>
+<body>
+<body>
+<div id="board_area">
+  <li id="bbs_title">학생증 사전 등록 시스템</li>
+    <div>
+        <input id='txtKeyWord'/>
+        <input type='button' value='검색'/>
+    </div>
+    <table class="list-table">
+      <thead>
+          <tr>
+                <th width="70">번호</th>
+                <th width="500">제목</th>
+                <th width="120">글쓴이</th>
+                <th width="100">작성일</th>
+                <th width="100">조회수</th>
+            </tr>
+        </thead>
+      <tbody>
+	  <!-- 게시판 목록 1개 페이지에 총 10개 리스트 노출-->
+        <tr>
+          <td width="70">1</td>
+          <td width="500"><a href="">인창고등학교_2021</a></td>
+          <td width="120">인창고등학교</td>
+          <td width="100">2021-11-18 10:43</td>
+          <td width="100">2</td>
+        </tr>
+
+		<tr>
+          <td width="70">2</td>
+          <td width="500"><a href="">선정고등학교_2022</a></td>
+          <td width="120">선정고등학교</td>
+          <td width="100">2022-11-18 10:43</td>
+          <td width="100">1</td>
+        </tr>
+
+		<tr>
+          <td width="70">3</td>
+          <td width="500"><a href="">대전고등학교_2021</a></td>
+          <td width="120">대전고등학교</td>
+          <td width="100">2021-11-10 10:43</td>
+          <td width="100">2</td>
+        </tr>
+      </tbody>
+
+    </table>
+    <a href="/page/board/write.php"><button id="write_btn">글쓰기</button></a>
+  </div>
+</body>
+</html>
