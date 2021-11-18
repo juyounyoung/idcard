@@ -10,9 +10,10 @@
 <body>
 <div id="board_area">
   <li id="bbs_title">학생증 사전 등록 시스템</li>
-    <div>
-        <input id='txtKeyWord'/>
-        <input type='button' value='검색'/>
+
+    <div id ="search_area">
+        <input type="text" id="search_text" name="search" size="40" required="required" />
+        <button id="search_btn">검색</button>
     </div>
     <table class="list-table">
       <thead>
@@ -54,5 +55,15 @@
     </table>
     <a href="/page/board/write.php"><button id="write_btn">글쓰기</button></a>
   </div>
+    <!--페이지-->
+    <div id="page_area">
+       <ul class="pagination">
+           <li><a class="page-link" href="#">&lt</a></li>
+           <li><a class="page-link" href="#">1</a></li>
+           <li><a class="page-link" href="#">2</a></li>
+           <li><a class="page-link" href="#">3</a></li>
+           <li class="page-item"><a class="page-link" href="#"> &gt;</a></li>
+       </ul>
+    </div>
 </body>
 </html>

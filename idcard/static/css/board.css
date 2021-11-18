@@ -11,12 +11,29 @@ ul li {
 	list-style:none;
 }
 
-
 #bbs_title {
     font-family:"맑은 고딕";
     font-size: 20px;
     font-weight: bold;
     text-align:center;
+    margin-bottom : 30px;
+}
+
+/* 검색영역 */
+#search_area{
+    float:right;
+}
+#search_text{
+    width:150px;
+    height:30px;
+    margin-right:55px;
+}
+#search_btn{
+	position: absolute;
+	width:50px;
+	height:30px;
+	right: 0;
+	font-size:13px;
 }
 /* 공통 */
 .fl {
@@ -28,12 +45,12 @@ ul li {
 
 /* 게시판 목록 */
 #board_area {
-    margin-top: 40px;
+    margin-top: 50px;
 	width: 900px;
 	position: relative;
 }
 .list-table {
-	margin-top: 40px;
+	margin-top: 80px;
 }
 .list-table thead th{
 	height:40px;
@@ -60,4 +77,50 @@ ul li {
 	height:30px;
 	right: 0;
 	font-size:13px;
+}
+
+/*페이징 영역*/
+
+#page_area{
+    margin-top:30px;
+    padding-top:30px;
+}
+ .pagination{
+    display:block;
+    text-align:center;
+ }
+ .pagination > li> a{
+    float:none;
+ }
+ul {
+	text-align:center;
+}
+ul li {
+	display:inline;
+	vertical-align:middle;
+}
+ul li a {
+	display:-moz-inline-stack;	/*FF2*/
+	display:inline-block;
+	vertical-align:top;
+	padding:4px;
+	margin-right:3px;
+	width:15px !important;
+	color:#000;
+	font:bold 12px tahoma;
+	border:1px solid #eee;
+	text-align:center;
+	text-decoration:none;
+	width /**/:26px;	/*IE 5.5*/
+
+}
+ul li a.now {
+	color:#fff;
+	background-color:#09C;
+	border:1px solid #09C;
+}
+ul li a:hover, ul li a:focus {
+	color:#fff;
+	border:1px solid #09C;
+	background-color:#09C;
 }
