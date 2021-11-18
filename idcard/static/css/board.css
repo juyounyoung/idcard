@@ -11,14 +11,6 @@ ul li {
 	list-style:none;
 }
 
-#bbs_title {
-    font-family:"맑은 고딕";
-    font-size: 20px;
-    font-weight: bold;
-    text-align:center;
-    margin-bottom : 30px;
-}
-
 /* 검색영역 */
 #search_area{
     float:right;
@@ -123,4 +115,61 @@ ul li a:hover, ul li a:focus {
 	color:#fff;
 	border:1px solid #09C;
 	background-color:#09C;
+}
+
+/* 게시판 등록 */
+
+h2{
+    padding:50px 0 0 50px;
+    text-align:center;
+}
+li{
+    padding:50px 0 50px 30px;
+}
+#upload_btn{
+    padding:5px 5px 5px 5px;
+    margin-left :20%;
+    margin-top:30px;
+    font-size: 17px;
+
+}
+#hand_btn{
+    padding:5px 5px 5px 5px;
+    margin-left :20%;
+    margin-top:30px;
+    font-size: 17px;
+}
+#register{
+    width:900px;
+    font-size:17px;
+    padding:50px 0 30px 0;
+    font-weight: bold;
+}
+#register_title{
+    width:350px;
+    height:40px;
+    padding-left:20px;
+}
+#line{
+    padding:30px 0 30px 0;
+    border-top:2px solid #09C;
+}
+#register_area{
+    width:900px;
+    border: 2px solid #09C;
+	margin:30px;
+    margin-left :20%;
+}
+#info{
+    font-size: 17px;
+     margin-left :20%;
+}
+#img_upload_btn{
+    margin:30px 0 0 30px;
+    font-size: 17px;
+}
+#register_btn{
+    margin-top:50px;
+    font-size: 25px;
+    margin-left :75%;
 }
