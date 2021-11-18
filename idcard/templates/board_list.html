@@ -27,9 +27,18 @@
         </thead>
       <tbody>
 	  <!-- 게시판 목록 1개 페이지에 총 10개 리스트 노출-->
+      {% for item in boards %}
         <tr>
           <td width="70">1</td>
-          <td width="500"><a href="">인창고등학교_2021</a></td>
+          <td width="500"><a href="{% url 'detail' item.pk %}">{{ item.title}}</a></td>
+          <td width="120">{{ item.author}}</td>
+          <td width="100">{{ item.regDTM}}</td>
+          <td width="100">{{ item.readCNT}}</td>
+        </tr>
+      {% endfor %}
+        <tr>
+          <td width="70">1</td>
+          <td width="500"><a href="{% url 'detail' 1 %}">인창고등학교_2021</a></td>
           <td width="120">인창고등학교</td>
           <td width="100">2021-11-18 10:43</td>
           <td width="100">2</td>
@@ -53,16 +62,31 @@
       </tbody>
 
     </table>
-    <a href="/page/board/write.php"><button id="write_btn">글쓰기</button></a>
+    <a href="post"><button id="write_btn">글쓰기</button></a>
   </div>
     <!--페이지-->
     <div id="page_area">
        <ul class="pagination">
-           <li><a class="page-link" href="#">&lt</a></li>
+            {% if board_list.has_previous %}
+                <a class="abutton" href="?page={{ board_list.previous_page_number }}">&lt</a>
+            {% endif %}
+           {% for page in boards.paginator.page_range %}
+                {% if page >= boards.number|add:-2 and page <= boards.number|add:2 %}
+                <li class="{% if page == boards.number %}current{% endif %}">
+                    <a href="?page={{ page }}">{{ page}}</a>
+                </li>
+                {% elif page >= boards.number|add:-3 and page <= boards.number|add:3 %}
+                    ..
+                {% endif %}
+            {% endfor %}
+           {% if board_list.has_next %}
+                <li><a class="abutton" href="?page={{ board_list.next_page_number }}"> ></a></li>
+            {% endif %}
+           <!--<li><a class="page-link" href="#">&lt</a></li>
            <li><a class="page-link" href="#">1</a></li>
            <li><a class="page-link" href="#">2</a></li>
            <li><a class="page-link" href="#">3</a></li>
-           <li class="page-item"><a class="page-link" href="#"> &gt;</a></li>
+           <li class="page-item"><a class="page-link" href="#"> &gt;</a></li>-->
        </ul>
     </div>
 </body>

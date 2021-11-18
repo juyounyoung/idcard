@@ -21,6 +21,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.login, name='login'),
-    path('board_list',views.board_list, name='board_list'),
-    path('board_register', views.board_register, name='board_register'),
+    # path('board_list',views.board_list, name='board_list'),
+    # path('board_register', views.board_register, name='board_register'),
+    path('board/', include('board.urls')),
 ]
