@@ -168,8 +168,19 @@ li{
     margin:30px 0 0 30px;
     font-size: 17px;
 }
+#btn_area{
+  margin-left :75%;
+}
 #register_btn{
     margin-top:50px;
     font-size: 25px;
-    margin-left :75%;
+
 }
+#modify_btn{
+    font-size: 25px;
+
+}
+#save_btn{
+    font-size: 25px;
+}
+
