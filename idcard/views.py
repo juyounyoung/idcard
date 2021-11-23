@@ -27,3 +27,6 @@ def board_list(request):
 
 def board_register(request):
     return render(request, 'board_register.html')
+
+def board_template(request):
+    return render(request, 'board_template.html')
