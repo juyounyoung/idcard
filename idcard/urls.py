@@ -24,4 +24,5 @@ urlpatterns = [
     # path('board_list',views.board_list, name='board_list'),
     # path('board_register', views.board_register, name='board_register'),
     path('board/', include('board.urls')),
+    path('board_template/', views.board_template, name='board_template'),
 ]
