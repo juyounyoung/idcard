@@ -1,10 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.shortcuts import HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.core.paginator import Paginator
 
 from .models import *
-
+from openpyxl import load_workbook
 
 # Create your views here.
 
@@ -17,23 +17,32 @@ def index(request):
     boards = paginator.get_page(page)
     return render(request, 'board_list.html', {'boards': boards})
 
+def board_write(request):
+    return render(request, 'board_register.html')
+
 # 게시판 글쓰기
-def post(request):
-    if request.method == "POST":
-        # TODO ::: 학생 리스트, 사진 DB 저장 기능 필요
-        author = request.POST['author']
-        title = request.POST['title']
-        content = request.POST['content']
-        board = Board(author=author, title=title, content=content)
-        board.save()
-        return HttpResponseRedirect(reverse('board_list'))
+def board_insert(request):
+    title = request.GET['title']
+    school_name = request.GET['school_name']
+    if title != "":
+        rows = Board.objects.create(title=title, school_name=school_name)
+        return redirect('/board')
     else:
-        return render(request, 'board_register.html')
+        return redirect('/board_write')
 
 # 게시판 상세조회
-def detail(request, post_id):
-    try:
-        board = Board.objects.get(pk=post_id)
-    except Board.DoesNotExist:
-        raise Http404("Does not exist!")
-    return render(request, 'detail.html', {'board': board})
+def board_view(request):
+    post_id = request.GET['board_oid']
+    board = Board.objects.filter(id=post_id)
+
+    return render(request, 'board_template.html', {
+        'board': board
+    })
+
+#엑셀 업로드
+def xlsxload():
+    load_wb = load_workbook("abc.xlsx", data_only=True)
+    load_ws = load_wb['1반']
+    for row in load_ws.rows:
+        for cell in row:
+            print(cell.value)

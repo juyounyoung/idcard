@@ -30,39 +30,16 @@
       {% for item in boards %}
         <tr>
           <td width="70">1</td>
-          <td width="500"><a href="{% url 'detail' item.pk %}">{{ item.title}}</a></td>
-          <td width="120">{{ item.author}}</td>
-          <td width="100">{{ item.regDTM}}</td>
-          <td width="100">{{ item.readCNT}}</td>
+          <td width="500"><a href="/board_view?board_id={{ item.id }}">{{ item.title}}</a></td>
+          <td width="120">{{ item.school_name}}</td>
+          <td width="100">{{ item.reporting_date}}</td>
+          <td width="100">{{ item.del_yn}}</td>
         </tr>
       {% endfor %}
-        <tr>
-          <td width="70">1</td>
-          <td width="500"><a href="{% url 'detail' 1 %}">인창고등학교_2021</a></td>
-          <td width="120">인창고등학교</td>
-          <td width="100">2021-11-18 10:43</td>
-          <td width="100">2</td>
-        </tr>
-
-		<tr>
-          <td width="70">2</td>
-          <td width="500"><a href="">선정고등학교_2022</a></td>
-          <td width="120">선정고등학교</td>
-          <td width="100">2022-11-18 10:43</td>
-          <td width="100">1</td>
-        </tr>
-
-		<tr>
-          <td width="70">3</td>
-          <td width="500"><a href="">대전고등학교_2021</a></td>
-          <td width="120">대전고등학교</td>
-          <td width="100">2021-11-10 10:43</td>
-          <td width="100">2</td>
-        </tr>
       </tbody>
 
     </table>
-    <a href="post"><button id="write_btn">글쓰기</button></a>
+    <a href="board_write"><button id="write_btn">글쓰기</button></a>
   </div>
     <!--페이지-->
     <div id="page_area">

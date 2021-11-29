@@ -28,5 +28,19 @@
     <button id="register_btn">등록</button>
     <button id="save_btn">저장</button>
     </div>
+
+    <form action="/board_insert" id="frm">
+        <input type="hidden" id="title" name="title">
+        <input type="hidden" id="school_name" name="school_name">
+    </form>
+
+    <script type="text/javascript">
+        var reg = document.getElementById('register_btn');
+        reg.addEventListener('click', function(){
+            document.getElementById('title').value = document.getElementById('register_title').value;
+            console.log(document.getElementById('title').value);
+            document.getElementById('frm').submit();
+        })
+    </script>
 </body>
 </html>
