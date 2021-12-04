@@ -160,6 +160,12 @@ li{
 	margin:30px;
     margin-left :20%;
 }
+#register_area2{
+    width:1150px;
+    border: 2px solid #09C;
+	margin:30px;
+    margin-left :10%;
+}
 #info{
     font-size: 17px;
      margin-left :20%;
@@ -183,4 +189,33 @@ li{
 img{
     width: 150px;
     height: 150px;
+}
+
+
+/* 탭 메뉴 영역 */
+
+dl {
+  position: relative;
+  width: 300px;
+  height: 100px;
+}
+dt {
+  height: 30px;
+  float: left;
+  width: 150px;
+  z-index: 9;
+  position: relative;
+  text-align: center;
+  background: #ddd;
+}
+dd {
+  position: absolute;
+  padding-top: 30px;
+  background-color: #f3f3f3;
+  width: 300px;
+  height: 100px;
+  margin: 0;
+}
+dd.hidden {
+   display: none;
 }
