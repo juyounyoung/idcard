@@ -10,11 +10,12 @@
 <body>
 <div id="board_area">
   <h2>학생증 사전 등록 게시판</h2>
-
-    <div id ="search_area">
-        <input type="text" id="search_text" name="search" required="required" />
-        <button id="search_btn">검색</button>
-    </div>
+    <form action="/board" method="GET">
+        <div id ="search_area">
+            <input type="text" id="search_text" name="search" required="required" />
+            <button id="search_btn" type="submit">검색</button>
+        </div>
+    </form>
     <table class="list-table">
       <thead>
           <tr>
@@ -32,8 +33,8 @@
           <td width="70">1</td>
           <td width="500"><a href="/board_view?board_id={{ item.id }}">{{ item.title}}</a></td>
           <td width="120">{{ item.school_name}}</td>
-          <td width="100">{{ item.reporting_date}}</td>
-          <td width="100">{{ item.del_yn}}</td>
+          <td width="100">{{ item.modified_date|date:'Y. m. d' }}</td>
+          <td width="100">{{ item.hit_count}}</td>
         </tr>
       {% endfor %}
       </tbody>

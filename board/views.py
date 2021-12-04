@@ -1,8 +1,15 @@
-from django.shortcuts import render, redirect
-from django.shortcuts import HttpResponseRedirect, Http404
-from django.urls import reverse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.paginator import Paginator
 from django.core.files.storage import FileSystemStorage
+from urllib.parse import quote
+import urllib
+import mimetypes
+from mimetypes import guess_type
+from django.contrib import messages
+from django.urls import reverse
+from django.views.generic import ListView
+import pandas as pd
 import datetime
 import random
 import os
@@ -14,7 +21,7 @@ from openpyxl import load_workbook
 
 def login(request):
     if request.method == 'POST':
-        username2 = request.POST['username']
+        username2 = request.POST['school_id']
         password2 = request.POST['password']
 
         print(username2)
@@ -23,8 +30,9 @@ def login(request):
         #     getUser = User.objects.get(user_id=username2)
         #     # 로그인 성공 -> board_list
         #     if getUser.password == password2:
-        return render(request, 'board_list.html')
+        return redirect('/board')
     return render(request, 'login.html')
+
 
 # 게시판 조회
 def board(request):
@@ -33,6 +41,12 @@ def board(request):
     paginator = Paginator(all_boards, 5)
     page = int(request.GET.get('page', 1))
     boards = paginator.get_page(page)
+
+    search_keyword = request.GET.get('search', '')
+    if search_keyword:
+        search_board_list = all_boards.filter(title__icontains=search_keyword)
+        return render(request, 'board_list.html', {'boards': search_board_list})
+
     return render(request, 'board_list.html', {'boards': boards})
 
 def board_write(request):
@@ -45,7 +59,7 @@ def board_insert(request):
 
     #학생이미지
     if request.FILES.get('ufile') is not None:
-        uploaded_file = request.FILES.get('ufile')
+        uploaded_file = request.FILES.get('imgfile')
         name_org = uploaded_file.name
         name_ext = os.path.splitext(name_org)[1]
 
@@ -57,7 +71,7 @@ def board_insert(request):
     """
     name_date = str(datetime.datetime.today().year) + '_' + str(datetime.datetime.today().month) + '_' + str(datetime.datetime.today().day)
 
-    uploaded_file = request.FILES['ufile']
+    excel_file = request.FILES['excel_file']
     name_old = uploaded_file.name
     name_ext = os.path.splitext(name_old)[1]
     name_new = 'A' + name_date + '_' + str(random.randint(1000000000, 9999999999))
@@ -66,15 +80,17 @@ def board_insert(request):
 
     name = fs.save(name_new + name_ext, uploaded_file)
 
-    load_wb = load_workbook(name, data_only=True)
-    load_ws = load_wb['1반']
-    for row in load_ws.rows:
+    table = pd.read_excel(excel_file, sheet_name = '1반', header=0)
+    engine = create_engine("mysql+pymysql://root:root!@localhost:3306/studentidcard", encoding='utf-8-sig')
+    table.to_sql(name='student', con=engine, if_exists='append', index=False)
+    excel_data = list()
+    for row in worksheet.iter_rows():
+        row_data = list()
         for cell in row:
-            print(cell.value)
-            
-    student_list = [Student(**vals) for vals in row]
-    Student.objects.bulk_create(student_list)
+            row_data.append(str(cell.value))
+        excel_data.append(row_data)
     """
+
 
     if title != "":
         rows = Board.objects.create(title=title, school_name=school_name)
@@ -82,11 +98,39 @@ def board_insert(request):
     else:
         return redirect('/board_write')
 
+
 # 게시판 상세조회
 def board_view(request):
-    post_id = request.GET['board_oid']
-    board = Board.objects.filter(id=post_id)
+    post_id = request.GET['board_id']
+    boards = get_object_or_404(Board, id=post_id)
 
-    return render(request, 'board_template.html', {
-        'board': board
-    })
+    context = {
+        'board': boards,
+    }
+
+    response = render(request, 'board_template.html', context)
+
+
+    boards.hit_count += 1
+    boards.save()
+
+    return response
+
+# 게시글 첨부파일 다운로드 한글명 인코딩
+def board_download_view(request):
+    post_id = request.GET['board_id']
+    boards = get_object_or_404(Board, id=post_id)
+    url = boards.upload_files.url[1:]
+    print(type(url))
+    print(url)
+    file_url = urllib.parse.unquote(url)
+
+    if os.path.exists(file_url):
+        with open(file_url, 'rb') as fh:
+            # quote_file_url = urllib.parse.quote(file_url.encode('utf-8'))
+            quote_file_url = urllib.parse.quote(boards.filename.encode('utf-8'))
+            response = HttpResponse(fh.read(), content_type=mimetypes.guess_type(file_url)[0])
+            # response['Content-Disposition'] = 'attachment;filename*=UTF-8\'\'%s' % quote_file_url[29:]
+            response['Content-Disposition'] = 'attachment;filename*=UTF-8\'\'%s' % quote_file_url
+            return response
+        raise Http404
