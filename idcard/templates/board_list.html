@@ -30,7 +30,7 @@
 	  <!-- 게시판 목록 1개 페이지에 총 10개 리스트 노출-->
       {% for item in boards %}
         <tr>
-          <td width="70">1</td>
+          <td width="70">{{ item.id}}</td>
           <td width="500"><a href="/board_view?board_id={{ item.id }}">{{ item.title}}</a></td>
           <td width="120">{{ item.school_name}}</td>
           <td width="100">{{ item.modified_date|date:'Y. m. d' }}</td>
@@ -45,19 +45,19 @@
     <!--페이지-->
     <div id="page_area">
        <ul class="pagination">
-            {% if board_list.has_previous %}
+            {% if boards.has_previous %}
                 <a class="abutton" href="?page={{ board_list.previous_page_number }}">&lt</a>
             {% endif %}
            {% for page in boards.paginator.page_range %}
                 {% if page >= boards.number|add:-2 and page <= boards.number|add:2 %}
                 <li class="{% if page == boards.number %}current{% endif %}">
-                    <a href="?page={{ page }}">{{ page}}</a>
+                    <a href="?search={{ search }}&page={{ page }}">{{ page}}</a>
                 </li>
                 {% elif page >= boards.number|add:-3 and page <= boards.number|add:3 %}
                     ..
                 {% endif %}
             {% endfor %}
-           {% if board_list.has_next %}
+           {% if boards.has_next %}
                 <li><a class="abutton" href="?page={{ board_list.next_page_number }}"> ></a></li>
             {% endif %}
            <!--<li><a class="page-link" href="#">&lt</a></li>

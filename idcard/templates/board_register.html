@@ -12,7 +12,11 @@
         <input type="text" id="register_title"/>
     </div>
 
-    <button id="upload_btn">Excel 업로드</button>
+    <form action="" method="post" id="frmxls" enctype="multipart/form-data">{% csrf_token %}
+        <input type="hidden" id="board_id" name="board_id" value="{{ board_id }}">
+        <button id="upload_btn" type="submit">Excel 업로드</button>
+        <input type="file" name="excelfile" id="excelfile">
+    </form>
     <br/>
 <!--    <button id="hand_btn">수기버튼</button>-->
    <div id="register_area">
@@ -40,6 +44,23 @@
         <input type="button" value=" - ">
     </div>
     <div id="register_area2">
+        {% for item in students %}
+        <input type="checkbox" id="check{{ item.id }}" name="check">
+        <label for="inputname">이름 : </label>
+            <input type="text" id="inputname{{ item.id }}" value="{{ item.student_name }}">
+
+            <label for="inputid">학번 : </label>
+            <input type="text" id="inputid{{ item.id }}" value="{{ item.student_ID }}">
+
+            <label for="inputrn">주민번호 : </label>
+            <input type="text" id="inputrn{{ item.id }}" value="{{ item.student_rn }}">
+
+            <label for="inputadd">주소 : </label>
+            <input type="text" id="inputadd{{ item.id }}" value="{{ item.detail_address }}">
+
+            <label for="inputpn">핸드폰번호 : </label>
+            <input type="text" id="inputpn{{ item.id }}" value="{{ item.student_phone }}">
+       {% endfor %}
         <input type="checkbox" id="check" name="check">
         <label for="inputname">이름 : </label>
             <input type="text" id="inputname">
