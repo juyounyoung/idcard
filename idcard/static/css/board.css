@@ -3,6 +3,7 @@
 	padding: 0;
 	font-family: 'Malgun gothic','Sans-Serif','Arial';
 }
+
 a {
 	text-decoration: none;
 	color:#333;
@@ -126,22 +127,11 @@ h2{
 li{
     padding:50px 0 50px 30px;
 }
-#upload_btn{
-    padding:5px 5px 5px 5px;
-    margin-left :20%;
-    margin-top:30px;
-    font-size: 17px;
 
-}
-#hand_btn{
-    padding:5px 5px 5px 5px;
-    margin-left :20%;
-    margin-top:30px;
-    font-size: 17px;
-}
+
 #register{
     width:900px;
-    font-size:17px;
+    font-size:15px;
     padding:50px 0 30px 0;
     font-weight: bold;
 }
@@ -161,36 +151,103 @@ li{
     margin-left :20%;
 }
 #register_area2{
-    width:1150px;
+    width:900px;
     border: 2px solid #09C;
 	margin:30px;
-    margin-left :10%;
+    margin-left :20%;
 }
 #info{
-    font-size: 17px;
-     margin-left :20%;
+	font-weight: bold;
+    font-size: 15px;
+    margin-left :20%;
+    margin-top : 25px;
+}
+/*수기 등록 영역*/
+#plus_area{
+    padding-left: 78%;
+}
+#delete_btn{
+    margin-left:5px;
+}
+.inputname{
+    width : 70px;
+}
+.inputid{
+    width : 100px;
+}
+.inputrn{
+    width : 110px;
+}
+.inputadd{
+    width : 120px;
+}
+.inputpn{
+    width : 120px;
+}
+
+.container{
+  width: 900px;
+  margin: 0 auto;
+}
+
+ul.tabs{
+  list-style: none;
+}
+ul.tabs li{
+  background: none;
+  color: #222;
+  padding: 10px 15px;
+  cursor: pointer;
+  float: left;
+  display:block;
+ }
+
+ul.tabs li.current{
+  background: #ededed;
+  color: #222;
+}
+
+.tab-content{
+  display: none;
+  background: #ededed;
+  padding: 15px;
+}
+.tab-content.current{
+  display: inherit;
+}
+
+.tabs > .active:after{opacity:1;visibility:visible}
+
+#upload_btn{
+    padding:1.5px 5px 1.5px 5px;
+    margin-left :20%;
+    margin-top:30px;
+    font-size:13px;
 }
 #img_upload_btn{
-    margin:30px 0 0 30px;
-    font-size: 17px;
+    padding:1.5px 5px 1.5px 5px;
+    margin-top:30px;
+    font-size:13px;
 }
 #btn_area{
-  margin-left :75%;
+    position: absolute;
+    padding-left: 73%;
 }
 #register_btn{
-    margin-top:50px;
-    font-size: 25px;
-
+    padding:1.5px 5px 1.5px 5px;
+    margin-top:30px;
+    font-size:13px;
+    font-weight: bold;
 }
-#save_btn{
-    font-size: 25px;
+#cancel_btn{
+    padding:1.5px 5px 1.5px 5px;
+    font-size:13px;
+    font-weight: bold;
 }
-
 img{
-    width: 150px;
-    height: 150px;
+    width:150px;
+    height:150px;
 }
-
 
 /* 탭 메뉴 영역 */
 
@@ -219,3 +276,14 @@ dd {
 dd.hidden {
    display: none;
 }
+
+
+.tabs-head{display:flex;border-bottom:1px solid #ebeced;margin-bottom:30px;font-size:13px; width:900px;}
+.tabs-head > *:not(:last-child){margin-right:7px}
+.tabs-head > *{padding:8px 15px;border:1px solid #ebeced;border-bottom:0;border-radius:4px 4px 0 0;position:relative;color:inherit;cursor:default}
+.tabs-head > *:after{content:'';display:block;width:100%;height:2px;background-color:#fafafc;position:absolute;left:0;bottom:-1px;visibility:hidden;opacity:0}
+.tabs-head > .active:after{opacity:1;visibility:visible}
+.tabs-content{position:relative}
+.tabs-content .b-tab{display:none;width:100%}
+.tabs-content .b-tab.active{display:block}
+

@@ -56,8 +56,11 @@ def board(request):
     return render(request, 'board_list.html', {'boards': boards})
 
 def board_write(request):
-    obj = Board.objects.latest('id')
-    new_board_id = int(obj.id) + 1
+    if Board.objects.all().exists():
+        obj = Board.objects.latest('id')
+        new_board_id = int(obj.id) + 1
+    else:
+        new_board_id = 1
     post_id = request.GET.get('board_id', new_board_id)
     school_id = request.session['school_ID']
     print("board_detail")
