@@ -1,10 +1,17 @@
 {% load static%}
 <!DOCTYPE HTML5>
+
+
 <html>
   <head>
     <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
 
     <title>학생증사전등록시스템 로그인</title>
+
+  <script language="javascript">
+  function showPopup() { window.open("/pw_edit", "비밀번호변경", "width=500, height=450, left=300, top=50"); }
+  </script>
+
   </head>
   <body width="100%" height="100%">
     <form action="" method="post" class="loginForm"> {% csrf_token %}
@@ -15,10 +22,12 @@
       <div class="passForm">
         <input type="password" class="pw" placeholder="PW" name="password">
       </div>
-      <button type="submit" class="btn" onclick="button()">
+<!--      <a href="#none" target="_blank" onclick="openPop()">팝업</a>-->
+      #로그인 버튼 후, 팝업창 생성
+      <button type="submit" class="btn" onclick="showPopup()">
+
         LOG IN
       </button>
-
     </form>
   </body>
 </html>
