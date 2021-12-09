@@ -8,6 +8,7 @@
 </head>
 
 <body>
+
 <h2>학생 정보 등록</h2>
     <div id ="register">제목 :
         <input type="text" id="register_title"/>
@@ -44,9 +45,12 @@
         <input type="button" value=" + " id="plus_btn">
     </div>
     <div id="register_area2">
-        {% for item in students %}
-        <input type="button" id="delete_btn" value=" - ">
-        <label for="inputname">이름 : </label>
+    <table id="content_table">
+        <tbody>
+         {% for item in students %}
+        <tr>
+        <td><button type="button" class="delete_btn" onclick="deleteRow(this)">-</button></td>
+            <td><label for="inputname">이름 : </label>
             <input type="text" id="inputname{{ item.id }}" class="inputname" value="{{ item.student_name }}">
 
             <label for="inputid">학번 : </label>
@@ -60,9 +64,12 @@
 
             <label for="inputpn">핸드폰번호 : </label>
             <input type="text" id="inputpn{{ item.id }}" class="inputpn" value="{{ item.student_phone }}"></br>
-       {% endfor %}
-        <input type="button" id="delete_btn" value=" - ">
-        <label for="inputname">이름 : </label>
+            </td>
+        </tr>
+      {% endfor %}
+        <tr>
+            <td><button type="button" id="delete_btn" onclick="deleteRow(this);">-</button></td>
+            <td><label for="inputname">이름 : </label>
             <input type="text" id="inputname" class="inputname">
 
             <label for="inputid">학번 : </label>
@@ -76,8 +83,21 @@
 
             <label for="inputpn">핸드폰번호 : </label>
             <input type="text" id="inputpn" class="inputpn"></br>
+            </td>
+        </tr>
+        </tbody>
+        </table>
     </div>
 
+<script>
+var eventTarget = document.getElementsByClassName('delete_btn')
+for (var i=0; i<eventTarget.length; i++) {
+eventTarget[i].addEventListener('click', function() {
+var parent = document.querySelector('#content_table tbody')
+parent.removeChild(this.parentElement.parentElement)
+i --})}
+
+</script>
   </div>
   <div id="tab-2" class="b-tab">
 

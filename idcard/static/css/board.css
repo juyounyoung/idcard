@@ -255,7 +255,18 @@ img{
     width:150px;
     height:150px;
 }
-
+/*board_template.html style*/
+#final_btn{
+    padding:1.5px 5px 1.5px 5px;
+    margin-top:30px;
+    font-size:13px;
+    font-weight: bold;
+}
+#btn_area2{
+    width : 900px;
+    position: absolute;
+    padding-left: 73%;
+}
 /* 탭 메뉴 영역 */
 
 dl {
