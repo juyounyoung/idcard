@@ -18,8 +18,12 @@ import os
 from .models import *
 from openpyxl import load_workbook
 
-# Create your views here.
+from django.contrib.auth.forms import PasswordChangeForm
+from .forms import CustomPasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
+# Create your views here.
+# @login_message_required
 def login(request):
     if request.method == 'POST':
         username2 = request.POST['school_id']
@@ -33,8 +37,31 @@ def login(request):
                 getName = school_info.objects.get(school_ID=username2)
                 request.session['school_name'] = getName.school_name
                 request.session['school_ID'] = username2
-                return redirect('/board')
+                if password2 =='password1':
+                    # return render(request, 'pw_edit.html')
+                    return render(request, 'login.html')
+                else:
+                    return redirect('/board')
     return render(request, 'login.html')
+
+
+#비밀번호 변경 팝업창(미완성)
+
+def pw_edit(request):
+    if request.method == 'POST':
+        password_change_form = CustomPasswordChangeForm(request.user, request.POST)
+        if password_change_form.is_valid():
+            user = password_change_form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "비밀번호를 성공적으로 변경하였습니다.")
+            return redirect('users:profile')
+    else:
+        password_change_form = CustomPasswordChangeForm(request.user)
+
+    return render(request, 'pw_edit.html', {'password_change_form':password_change_form})
+
+
+
 
 
 # 게시판 조회
@@ -56,8 +83,11 @@ def board(request):
     return render(request, 'board_list.html', {'boards': boards})
 
 def board_write(request):
-    obj = Board.objects.latest('id')
-    new_board_id = int(obj.id) + 1
+    if Board.objects.all().exists():
+        obj = Board.objects.latest('id')
+        new_board_id = int(obj.id) + 1
+    else:
+        new_board_id = 1
     post_id = request.GET.get('board_id', new_board_id)
     school_id = request.session['school_ID']
     print("board_detail")

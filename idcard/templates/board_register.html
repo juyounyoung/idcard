@@ -1,20 +1,23 @@
 {% load static%}
 
-<DOCTYPE HTML5>
+<DOCTYPE HTML5 xmlns="http://www.w3.org/1999/html">
 <html>
 <head>
     <link rel="stylesheet" href="{% static 'css/board.css' %}">
     <title>학생증사전등록시스템 게시판</title>
 </head>
+
 <body>
+
 <h2>학생 정보 등록</h2>
     <div id ="register">제목 :
         <input type="text" id="register_title"/>
     </div>
 
+    <p id ="info">- 학생 필수 정보<br/>
     <form action="" method="post" id="frmxls" enctype="multipart/form-data">{% csrf_token %}
         <input type="hidden" id="board_id" name="board_id" value="{{ board_id }}">
-        <button id="upload_btn" type="submit">Excel 업로드</button>
+        <button id="upload_btn" type="submit">excel 업로드</button>
         <input type="file" name="excelfile" id="excelfile">
     </form>
     <br/>
@@ -26,9 +29,8 @@
        - 각각의 sheet 이름은 1반, 2반, 3반으로 정할 것 <br/>
        (행과 sheet이름 오류시 업로드 실패될 수 있음.)
     </div>
-
-
 <!--탭메뉴 만들기-->
+
 
 <div class="tabs-head">
   <span data-tab="tab-1" class="tabs-nav">1 반</span>
@@ -39,50 +41,68 @@
 
 <div class="tabs-content">
   <div id="tab-1" class="b-tab active">
-    <div id="plusminus">
-        <input type="button" value=" + ">
-        <input type="button" value=" - ">
+    <div id="plus_area">
+        <input type="button" value=" + " id="plus_btn">
     </div>
     <div id="register_area2">
-        {% for item in students %}
-        <input type="checkbox" id="check{{ item.id }}" name="check">
-        <label for="inputname">이름 : </label>
-            <input type="text" id="inputname{{ item.id }}" value="{{ item.student_name }}">
+    <table id="content_table">
+        <tbody>
+         {% for item in students %}
+        <tr>
+        <td><button type="button" class="delete_btn" onclick="deleteRow(this)">-</button></td>
+            <td><label for="inputname">이름 : </label>
+            <input type="text" id="inputname{{ item.id }}" class="inputname" value="{{ item.student_name }}">
 
             <label for="inputid">학번 : </label>
-            <input type="text" id="inputid{{ item.id }}" value="{{ item.student_ID }}">
+            <input type="text" id="inputid{{ item.id }}" class="inputid" value="{{ item.student_ID }}">
 
             <label for="inputrn">주민번호 : </label>
-            <input type="text" id="inputrn{{ item.id }}" value="{{ item.student_rn }}">
+            <input type="text" id="inputrn{{ item.id }}" class="inputrn" value="{{ item.student_rn }}">
 
             <label for="inputadd">주소 : </label>
-            <input type="text" id="inputadd{{ item.id }}" value="{{ item.detail_address }}">
+            <input type="text" id="inputadd{{ item.id }}" class="inputadd" value="{{ item.detail_address }}">
 
             <label for="inputpn">핸드폰번호 : </label>
-            <input type="text" id="inputpn{{ item.id }}" value="{{ item.student_phone }}">
-       {% endfor %}
-        <input type="checkbox" id="check" name="check">
-        <label for="inputname">이름 : </label>
-            <input type="text" id="inputname">
+            <input type="text" id="inputpn{{ item.id }}" class="inputpn" value="{{ item.student_phone }}"></br>
+            </td>
+        </tr>
+      {% endfor %}
+        <tr>
+            <td><button type="button" id="delete_btn" onclick="deleteRow(this);">-</button></td>
+            <td><label for="inputname">이름 : </label>
+            <input type="text" id="inputname" class="inputname">
 
             <label for="inputid">학번 : </label>
-            <input type="text" id="inputid">
+            <input type="text" id="inputid" class="inputid" >
 
             <label for="inputrn">주민번호 : </label>
-            <input type="text" id="inputrn">
+            <input type="text" id="inputrn" class="inputrn">
 
             <label for="inputadd">주소 : </label>
-            <input type="text" id="inputadd">
+            <input type="text" id="inputadd" class="inputadd">
 
             <label for="inputpn">핸드폰번호 : </label>
-            <input type="text" id="inputpn">
+            <input type="text" id="inputpn" class="inputpn"></br>
+            </td>
+        </tr>
+        </tbody>
+        </table>
     </div>
 
+<script>
+var eventTarget = document.getElementsByClassName('delete_btn')
+for (var i=0; i<eventTarget.length; i++) {
+eventTarget[i].addEventListener('click', function() {
+var parent = document.querySelector('#content_table tbody')
+parent.removeChild(this.parentElement.parentElement)
+i --})}
+
+</script>
   </div>
   <div id="tab-2" class="b-tab">
 
     <!-- 여기에 두 번째 탭의 콘텐츠를 작성! -->
-
+ㄴ
   </div>
   <div id="tab-3" class="b-tab">
 
@@ -97,26 +117,20 @@
   </div>
 </div>
 
-<style>
-.tabs-head{display:flex;border-bottom:1px solid #ebeced;margin-bottom:30px;font-size:13px}
-.tabs-head > *:not(:last-child){margin-right:7px}
-.tabs-head > *{padding:8px 15px;border:1px solid #ebeced;border-bottom:0;border-radius:4px 4px 0 0;position:relative;color:inherit;cursor:default}
-.tabs-head > *:after{content:'';display:block;width:100%;height:2px;background-color:#fafafc;position:absolute;left:0;bottom:-1px;visibility:hidden;opacity:0}
-.tabs-head > .active:after{opacity:1;visibility:visible}
-.tabs-content{position:relative}
-.tabs-content .b-tab{display:none;width:100%}
-.tabs-content .b-tab.active{display:block}
-</style>
-
 <script>/*<![CDATA[*/ // Source: codepen.io/wangel13/pen/OXBrRp
 function Tabs() { var bindAll = function() { var menuElements = document.querySelectorAll('[data-tab]'); for(var i = 0; i < menuElements.length ; i++) { menuElements[i].addEventListener('click', change, false); } }; var clear = function() {var menuElements = document.querySelectorAll('[data-tab]'); for(var i = 0; i < menuElements.length ; i++) { menuElements[i].classList.remove('active'); var id = menuElements[i].getAttribute('data-tab'); document.getElementById(id).classList.remove('active'); } }; var change = function(e) { clear(); e.target.classList.add('active'); var id = e.currentTarget.getAttribute('data-tab'); document.getElementById(id).classList.add('active'); }; bindAll(); } var connectTabs = new Tabs();
 /*]]>*/</script>
 
 
-    <p id ="info">- 학생 사진 등록(파일의 형식은 jpg, png)<button id="img_upload_btn">업로드</button><input type="file" name="ufile" id="ufile"></p>
+    <p id ="info">- 학생 사진 등록(파일의 형식은 jpg, png)<br/>
+        <button id="img_upload_btn">이미지 업로드</button>
+        <input type="file" name="ufile" id="ufile">
+    </p>
+
     <div id="btn_area">
-    <button id="register_btn">등록</button>
-    <button id="save_btn">저장</button>
+        <button id="save_btn">저장</button>
+        <button id="register_btn">등록</button>
+        <button id="cancel_btn">취소</button>
     </div>
 
     <form action="/board_insert" id="frm">
