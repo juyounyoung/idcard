@@ -10,5 +10,7 @@ urlpatterns = [
     path('board_view', views.board_view, name='board_view'),
     path('board_edit', views.board_edit, name='board_edit'),
     path('excel_upload', views.excel_upload, name='excel_upload'),
+    path('pw_edit', views.pw_edit, name='pw_edit'),
+
     # path('post/<int:post_id>', views.detail, name='detail')
 ]

@@ -85,3 +85,10 @@ body {
 .bottomText {
   text-align: center;
 }
+
+pw_edit_area{
+    width:900px;
+    border: 2px solid #09C;
+	margin:30px;
+    margin-left :20%;
+}
