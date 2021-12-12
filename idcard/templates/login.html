@@ -22,6 +22,10 @@
       <div class="passForm">
         <input type="password" class="pw" placeholder="PW" name="password">
       </div>
+      <!--<p>{{ chklogin }}</p>-->
+      {% for message in messages %}
+      {% if message %}<script language="javascript">alert('{{ message }}')</script>{% endif %}
+      {% endfor %}
 <!--      <a href="#none" target="_blank" onclick="openPop()">팝업</a>-->
       <button type="submit" class="btn" onclick="showPopup()">
         LOG IN

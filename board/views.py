@@ -33,20 +33,34 @@ def login(request):
         if Users_user.objects.filter(school_ID=username2).exists():
             getUser = Users_user.objects.get(school_ID=username2)
             # 로그인 성공 -> board_list
-            if getUser.password == password2:
+            if getUser.password == password2 and getUser.login_trial != 5:
                 getName = school_info.objects.get(school_ID=username2)
                 request.session['school_name'] = getName.school_name
                 request.session['school_ID'] = username2
-                if password2 =='password1':
-                    # return render(request, 'pw_edit.html')
-                    return render(request, 'login.html')
+                # 로그인시도횟수 초기화
+                getUser.login_trial = 0
+                getUser.save()
+                # 첫번째 로그인 -> 비밀번호 변경 팝업
+                if password2 == 'password1':
+                    return render(request, 'pw_edit.html')
+                    # return render(request, 'login.html')
                 else:
                     return redirect('/board')
+            # 로그인 실패 -> 로그인시도횟수 추가
+            else:
+                chklogin = ''
+                if getUser.login_trial == 5:
+                    chklogin = '로그인 시도 횟수 5회 초과하여 로그인할 수 없습니다. 관리자에게 문의하세요'
+                else:
+                    getUser.login_trial += 1
+                    getUser.save()
+                    chklogin = '로그인 시도 횟수 : ' + str(getUser.login_trial) + '회'
+                messages.warning(request, chklogin)
+                return render(request, 'login.html')
     return render(request, 'login.html')
 
 
 #비밀번호 변경 팝업창(미완성)
-
 def pw_edit(request):
     if request.method == 'POST':
         password_change_form = CustomPasswordChangeForm(request.user, request.POST)
@@ -90,8 +104,7 @@ def board_write(request):
         new_board_id = 1
     post_id = request.GET.get('board_id', new_board_id)
     school_id = request.session['school_ID']
-    print("board_detail")
-    print(post_id)
+    slist = []
 
     if request.FILES.get('excelfile') is not None:
         print("excel not none")
@@ -99,65 +112,98 @@ def board_write(request):
         fs = FileSystemStorage(location='static/board/xlsx')
         name = fs.save(excel_file.name, excel_file)
 
-
         sheets = load_workbook(excel_file, read_only=True).sheetnames
         for sheet in sheets:
             table1 = pd.read_excel(excel_file, sheet_name=sheet, header=0)
             for r in range(0, table1.index.stop):
-                student_group = sheet
-                student_name = table1.iat[r, 1]
-                student_id = table1.iat[r, 2]
-                student_rn = table1.iat[r, 3]
-                student_phone = table1.iat[r, 4]
-                student_img = str(student_id) + '_' + student_name + '.jpg'
-                if student.objects.filter(Q(school_ID=school_id) & Q(student_ID=student_id)).exists():
-                    student_row = student.objects.filter(Q(school_ID=school_id) & Q(student_ID=student_id))
-                    student_row.update(
-                        student_group=student_group,
-                        student_name=student_name,
-                        student_rn=student_rn,
-                        student_phone=student_phone,
-                        student_img=student_img,
-                    )
-                else:
-                    student_row = student.objects.create(
-                        school_ID=school_id,
-                        student_ID=student_id,
-                        student_group=student_group,
-                        student_name=student_name,
-                        student_rn=student_rn,
-                        student_phone=student_phone,
-                        student_img=student_img,
-                        # 'detail_address': detail_address,
-                    )
+                srow = student()
+                srow.student_group = sheet
+                srow.student_name = table1.iat[r, 1]
+                srow.student_ID = table1.iat[r, 2]
+                srow.student_rn = table1.iat[r, 3]
+                srow.student_phone = table1.iat[r, 4]
+                srow.detail_address = table1.iat[r, 5]
+                srow.board_ID = post_id
+                slist.append(srow)
 
-    students = student.objects.filter(school_ID=school_id)
     context = {
-        'students': students,
-        'board_id': post_id
+        'students': slist,
+        'board_id': post_id,
+        'img_cnt': 0,
     }
 
     return render(request, 'board_register.html', context)
 
 # 게시판 글쓰기
 def board_insert(request):
-    title = request.GET['title']
+    title = request.POST['title']
     school_name = request.session['school_name']
-    filename = ''
+    school_id = request.session['school_ID']
+    post_id = request.POST['board_id2']
 
-    #학생이미지
-    if request.FILES.get('ufile') is not None:
-        uploaded_file = request.FILES.get('ufile')
-        name_org = uploaded_file.name
-        name_ext = os.path.splitext(name_org)[1]
+    # 학생정보 업데이트
+    iname = request.POST.getlist('inputname')
+    iid = request.POST.getlist('inputid')
+    irn = request.POST.getlist('inputrn')
+    iadd = request.POST.getlist('inputadd')
+    ipn = request.POST.getlist('inputpn')
+    igroup = request.POST.getlist('inputgroup')
+    if len(iname) > 0:
+        students = student.objects.filter(board_ID=post_id)
+        if students.exists():
+            students.delete()
+        for i in range(len(iname)):
+            # 학생정보 입력 error
+            if len(iname[i]) == 0 or len(irn[i]) == 0 or len(ipn[i]) == 0 \
+                    or len(iid[i]) == 0 or len(iadd[i]) == 0:
+                messages.warning(request, '학생필수정보가 입력되지 않은 행이 존재합니다.')
+                # return redirect('/board')
 
-        fs = FileSystemStorage(location='static/board/image')
+        for i in range(len(iname)):
+            if student.objects.filter(Q(school_ID=school_id) & Q(student_ID=iid[i]) & Q(board_ID=post_id)).exists():
+                student_row = student.objects.filter(Q(school_ID=school_id) & Q(student_ID=iid[i]) & Q(board_ID=post_id))
+                student_row.update(
+                    student_group=igroup[i],
+                    student_name=iname[i],
+                    student_rn=irn[i],
+                    student_phone=ipn[i],
+                    detail_address=iadd[i],
+                )
+            else:
+                student_row = student.objects.create(
+                    school_ID=school_id,
+                    student_ID=iid[i],
+                    student_group=igroup[i],
+                    student_name=iname[i],
+                    student_rn=irn[i],
+                    student_phone=ipn[i],
+                    board_ID=post_id,
+                    detail_address=iadd[i],
+                )
 
-        name = fs.save(name_org + name_ext, uploaded_file)
-        filename = uploaded_file.name
+    # 학생이미지
+    if request.POST.getlist('file2') is not None:
+        for uploaded_file in request.POST.getlist('file2'):
+            name_org = uploaded_file.name
+            print(name_org)
+            name_ext = os.path.splitext(name_org)[1]
+            fs = FileSystemStorage(location='static/board/image')
+            name = fs.save(name_org + name_ext, uploaded_file.file)
+            filename = name_org.split('_')
+            students = student.objects.filter(
+                Q(student_name=filename[1]) & Q(student_ID=filename[0]) & Q(board_ID=post_id)
+            )
+            if students.exists():
+                students.student_img = name_org
+                students.save()
 
     if title != "":
-        rows = Board.objects.create(title=title, school_name=school_name, filename=filename)
+        if Board.objects.filter(id=post_id).exists():
+            row = Board.objects.get(id=post_id)
+            row.title = title
+            row.save()
+        else:
+            rows = Board.objects.create(title=title, school_name=school_name)
         return redirect('/board')
     else:
         return redirect('/board_write')
@@ -166,11 +212,11 @@ def board_insert(request):
 # 게시판 상세조회
 def board_view(request):
     post_id = request.GET.get('board_id')
-    print("board_detail"+post_id)
     school_id = request.session['school_ID']
     school_name = request.session['school_name']
     boards = get_object_or_404(Board, id=post_id)
-    students = student.objects.filter(school_ID=school_id)
+    school = get_object_or_404(school_info, school_ID=school_id)
+    students = student.objects.filter(board_ID=post_id)
 
     if school_id == boards.school_name:
         board_auth = True
@@ -182,11 +228,10 @@ def board_view(request):
         'board_auth': board_auth,
         'board_id': post_id,
         'students': students,
-        'count': int(students.count()/3)
+        'school': school,
     }
 
     response = render(request, 'board_template.html', context)
-
 
     boards.hit_count += 1
     boards.save()
@@ -197,15 +242,16 @@ def board_view(request):
 def board_edit(request):
     post_id = request.GET['board_id']
     boards = get_object_or_404(Board, id=post_id)
-    school_id = request.session['school_ID']
-    school_name = request.session['school_name']
-    students = student.objects.filter(school_ID=school_id)
+    students = student.objects.filter(board_ID=post_id)
+    img_cnt = 0
+    if students.exists():
+        img_st = students.exclude(Q(student_img__isnull=True) | Q(student_img__exact=''))
 
     context = {
         'boards': boards,
         'board_id': post_id,
         'students': students,
-        'count': int(students.count()/3)
+        'img_cnt': img_st.count(),
     }
 
     return render(request, 'board_register.html', context)
@@ -229,58 +275,3 @@ def board_download_view(request):
             response['Content-Disposition'] = 'attachment;filename*=UTF-8\'\'%s' % quote_file_url
             return response
         raise Http404
-
-# 엑셀 업로드
-def excel_upload(request):
-    post_id = request.GET.get('board_id')
-    school_id = request.session['school_ID']
-    print("board_detail")
-    print(post_id)
-
-    if request.FILES.get('excelfile') is not None:
-        print("excel not none")
-        excel_file = request.FILES.get('excelfile')
-        fs = FileSystemStorage(location='static/board/xlsx')
-        name = fs.save(excel_file.name, excel_file)
-
-        table1 = pd.read_excel(excel_file, sheet_name='1반', header=0)
-
-        df = pd.read_excel(excel_file)
-        for sheet_name in df.sheet_names:
-            print(sheet_name)
-
-        for r in range(1, table1.nrows):
-            student_group = '1반'
-            student_name = table1.cell(r, 2).value
-            student_id = table1.cell(r, 3).value
-            student_rn = table1.cell(r, 4).value
-            student_phone = table1.cell(r, 5).value
-            student_img = student_id+'_'+student_name+'.jpg'
-            if student.objects.filter(Q(school_ID=school_id) & Q(student_ID=student_id)).exists():
-                student_row = student.objects.filter(Q(school_ID=school_id) & Q(student_ID=student_id))
-                student_row.update(
-                    student_group=student_group,
-                    student_name=student_name,
-                    student_rn=student_rn,
-                    student_phone=student_phone,
-                    student_img=student_img,
-                )
-            else:
-                student_row = student.objects.create(
-                    school_ID=school_id,
-                    student_ID=student_id,
-                    student_group=student_group,
-                    student_name=student_name,
-                    student_rn=student_rn,
-                    student_phone=student_phone,
-                    student_img=student_img,
-                    # 'detail_address': detail_address,
-                )
-
-    students = student.objects.filter(school_ID=school_id)
-    context = {
-        'students': students,
-        'board_id': post_id
-    }
-
-    return render(request, 'board_register.html', context)

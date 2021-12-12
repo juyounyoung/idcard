@@ -15,6 +15,29 @@
 <!--<table border="1" width ="500" height="300" align = "center" >-->
 <div style="padding:50px;">
 <table border="1" align = "center" >
+    {% for item in students %}
+    <tr>
+        <th height="50" colspan="3">학  생  증</th>
+    </tr>
+    <tr>
+        <td rowspan="2"><img src="{% static "{{ item.student_img }}" %}" alt=""></td>  <th width="70">이  름</th> <td>{{ item.student_name }}</td>
+    </tr>
+    <tr>
+        <th width="70">주  소</th><td>{{ item.detail_address }}</td>
+    </tr>
+    <tr>
+        <td colspan="3">위 학생은 본교 학생임을 증명합니다.</td>
+    </tr>
+    <tr>
+        <th colspan="3">{{ school.school_name }}</th>
+    </tr>
+    <tr>
+        <th colspan="3">{{ school.school_address }}</th>
+    </tr>
+    <tr>
+        <th colspan="3">{{ school.school_tel }}</th>
+    </tr>
+    {% endfor %}
     <tr>
         <th height="50" colspan="3">학  생  증</th>
         <th height="50" colspan="3">학  생  증</th>

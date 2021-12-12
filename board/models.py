@@ -7,6 +7,7 @@ from django.db import models
 class student(models.Model):
     school_ID = models.CharField(db_column='school_ID', max_length=20, null=False, unique=True)
     student_ID = models.CharField(db_column='student_ID', max_length=20, null=False, unique=True)
+    board_ID = models.CharField(db_column='board_ID', max_length=20, null=False, unique=True)
     student_group = models.CharField(db_column='student_group', max_length=20, null=True)
     student_name = models.CharField(db_column='student_name', max_length=20)
     student_rn = models.CharField(db_column='student_rn', max_length=14)
@@ -28,6 +29,7 @@ class school_info(models.Model):
     school_ID = models.CharField(db_column='school_ID', max_length=20, primary_key=True)
     school_name = models.CharField(db_column='school_name', max_length=25)
     school_address = models.CharField(db_column='school_address', max_length=100)
+    school_tel = models.CharField(db_column='school_tel', max_length=100)
 
     class Meta:
         managed = False
@@ -37,6 +39,7 @@ class Users_user(models.Model):
     school_ID = models.CharField(db_column='school_ID', max_length=20, primary_key=True)
     password = models.CharField(db_column='password', max_length=128, null=False)
     last_login = models.DateTimeField(db_column='last_login', auto_now=True)
+    login_trial = models.IntegerField(db_column='login_trial', default=0)
 
 
     class Meta:
