@@ -148,7 +148,14 @@ def board_insert(request):
     iadd = request.POST.getlist('inputadd')
     ipn = request.POST.getlist('inputpn')
     igroup = request.POST.getlist('inputgroup')
+
+    ilist = []
     if len(iname) > 0:
+        img_saver = student.objects.exclude(Q(student_img__isnull=True) | Q(student_img__exact=''))
+        if img_saver.exists():
+            for i in img_saver:
+                ilist.append(i.student_img)
+
         students = student.objects.filter(board_ID=post_id)
         if students.exists():
             students.delete()
@@ -197,6 +204,19 @@ def board_insert(request):
                     Q(student_name=filename[1]) & Q(student_ID=filename[0]) & Q(board_ID=post_id)
                 )
                 student_row.student_img = name_org
+                student_row.save()
+    if len(ilist) > 0:
+        for i in ilist:
+            filename = i.split('.')[0].split('_')
+            print(filename)
+            students = student.objects.filter(
+                Q(student_name=filename[1]) & Q(student_ID=filename[0]) & Q(board_ID=post_id)
+            )
+            if students.exists():
+                student_row = student.objects.get(
+                    Q(student_name=filename[1]) & Q(student_ID=filename[0]) & Q(board_ID=post_id)
+                )
+                student_row.student_img = i
                 student_row.save()
 
     if title != "":
