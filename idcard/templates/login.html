@@ -9,7 +9,9 @@
     <title>학생증사전등록시스템 로그인</title>
 
   <script language="javascript">
-  function showPopup() { window.open("/pw_edit", "비밀번호변경", "width=500, height=450, left=300, top=50"); }
+      if ({{ pw_edit }}) {
+    window.open("/pw_edit", "비밀번호변경", "width=500, height=450, left=300, top=50");
+    }
   </script>
 
   </head>
@@ -27,7 +29,7 @@
       {% if message %}<script language="javascript">alert('{{ message }}')</script>{% endif %}
       {% endfor %}
 <!--      <a href="#none" target="_blank" onclick="openPop()">팝업</a>-->
-      <button type="submit" class="btn" onclick="showPopup()">
+      <button type="submit" class="btn">
         LOG IN
       </button>
     </form>

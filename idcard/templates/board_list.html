@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="{% static 'css/board.css' %}">
     <title>학생증사전등록시스템 게시판</title>
 </head>
+{% for message in messages %}
+{% if message %}<script language="javascript">alert('{{ message }}')</script>{% endif %}
+{% endfor %}
 <body>
 <body>
 <div id="board_area">

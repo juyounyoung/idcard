@@ -3,7 +3,10 @@
 <head>
         <p style="text-align:center;">초기 비밀번호 변경</p>
 </head>
-<form method="POST" novalidate>
+{% for message in messages %}
+{% if message %}<script language="javascript">alert('{{ message }}')</script>{% endif %}
+{% endfor %}
+<form method="POST" action="/pw_edit" novalidate>
     {% csrf_token %}
     <div id = "pw_edit_area">
         <br>
@@ -16,16 +19,6 @@
                 document.getElementsByName('label_old_password')[0].setAttribute('class', 'active');
             }
         </script>
-        {% if password_change_form.old_password.errors %}
-        <script type="text/javascript">
-            document.getElementsByName('old_password')[0].setAttribute('class', 'form-control is-invalid')
-        </script>
-        {% for error in password_change_form.old_password.errors %}
-        <div class="invalid-feedback">
-            {{ error }}
-        </div>
-        {% endfor %}
-        {% endif %}
     </div>
     <div>
         <label name="label_new_password1" for="{{ password_change_form.new_password1.id_for_label }}">
@@ -36,16 +29,6 @@
                 document.getElementsByName('label_new_password1')[0].setAttribute('class', 'active');
             }
         </script>
-        {% if password_change_form.new_password1.errors %}
-        <script type="text/javascript">
-            document.getElementsByName('new_password1')[0].setAttribute('class', 'form-control is-invalid')
-        </script>
-        {% for error in password_change_form.new_password1.errors %}
-        <div class="invalid-feedback">
-            {{ error }}
-        </div>
-        {% endfor %}
-        {% endif %}
     </div>
     <div>
         <label name="label_new_password2" for="{{ password_change_form.new_password2.id_for_label }}">
@@ -56,17 +39,6 @@
                 document.getElementsByName('label_new_password2')[0].setAttribute('class', 'active');
             }
         </script>
-        {% if password_change_form.new_password2.errors %}
-        <script type="text/javascript">
-            document.getElementsByName('new_password2')[0].setAttribute('class', 'form-control is-invalid')
-        </script>
-        {% for error in password_change_form.new_password2.errors %}
-        <div style="white-space: nowrap;" class="invalid-feedback">
-            {{ error }}
-        </div>
-        <br>
-        {% endfor %}
-        {% endif %}
         </div>
         <small>
             <br>
@@ -76,7 +48,7 @@
 
         <br>
 
-    <button>비밀번호 변경</button> <button>확인</button>
+    <button type="submit">비밀번호 변경</button> <button onclick="self.close();">확인</button>
 
         </div>
 

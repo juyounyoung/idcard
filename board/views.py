@@ -42,8 +42,8 @@ def login(request):
                 getUser.save()
                 # 첫번째 로그인 -> 비밀번호 변경 팝업
                 if password2 == 'password1':
-                    return render(request, 'pw_edit.html')
-                    # return render(request, 'login.html')
+                    # return render(request, 'pw_edit.html')
+                    return render(request, 'login.html', {'pw_edit': 1})
                 else:
                     return redirect('/board')
             # 로그인 실패 -> 로그인시도횟수 추가
@@ -63,20 +63,36 @@ def login(request):
 #비밀번호 변경 팝업창(미완성)
 def pw_edit(request):
     if request.method == 'POST':
-        password_change_form = CustomPasswordChangeForm(request.user, request.POST)
-        if password_change_form.is_valid():
-            user = password_change_form.save()
-            update_session_auth_hash(request, user)
-            messages.success(request, "비밀번호를 성공적으로 변경하였습니다.")
-            return redirect('users:profile')
+        password_change_form = CustomPasswordChangeForm(request, request.POST)
+        context = {'password_change_form': password_change_form}
+        # if password_change_form.is_valid():
+        school_id = request.session['school_ID']
+        old_password = request.POST['old_password']
+        new_password1 = request.POST['new_password1']
+        new_password2 = request.POST['new_password2']
+
+        getUser = Users_user.objects.get(school_ID=school_id)
+        # 기존 비밀번호
+        if getUser.password == old_password:
+            if len(new_password1) < 8:
+                messages.warning(request, '최소 길이 에러')
+                return render(request, 'pw_edit.html', context)
+            if new_password1 == new_password2:
+                getUser.password = new_password1
+                getUser.save()
+            else:
+                messages.warning(request,'새 비밀번호를 다시 확인해주세요')
+                return render(request, 'pw_edit.html', context)
+        else:
+            messages.warning(request, '기존 비밀번호를 다시 확인해주세요')
+            return render(request, 'pw_edit.html', context)
+
+        messages.success(request, "비밀번호를 성공적으로 변경하였습니다.")
+        return render(request, 'pw_edit.html', context)
     else:
-        password_change_form = CustomPasswordChangeForm(request.user)
+        password_change_form = CustomPasswordChangeForm(request)
 
-    return render(request, 'pw_edit.html', {'password_change_form':password_change_form})
-
-
-
-
+    return render(request, 'pw_edit.html', {'password_change_form': password_change_form})
 
 # 게시판 조회
 def board(request):
@@ -104,6 +120,13 @@ def board_write(request):
         new_board_id = 1
     post_id = request.GET.get('board_id', new_board_id)
     school_id = request.session['school_ID']
+    school_name = request.session['school_name']
+
+    # 학교 당 게시글 하나
+    if school_id != 'admin' and Board.objects.filter(school_name=school_name).exists():
+        messages.warning(request, '게시글은 하나씩만 작성 가능합니다')
+        return redirect('/board')
+
     slist = []
 
     if request.FILES.get('excelfile') is not None:
@@ -238,6 +261,12 @@ def board_view(request):
     school_name = request.session['school_name']
     boards = get_object_or_404(Board, id=post_id)
     school = get_object_or_404(school_info, school_ID=school_id)
+
+    # 조회 권한
+    if school_id != 'admin' and boards.school_name != school_name:
+        messages.warning(request, '해당 학교만 조회가 가능합니다')
+        return redirect('/board')
+    
     students = student.objects.filter(board_ID=post_id)
     final_yn = boards.final_yn
 
