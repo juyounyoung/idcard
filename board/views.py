@@ -182,20 +182,22 @@ def board_insert(request):
                 )
 
     # 학생이미지
-    if request.POST.getlist('file2') is not None:
-        for uploaded_file in request.POST.getlist('file2'):
+    if request.FILES.getlist('file2') is not None:
+        for uploaded_file in request.FILES.getlist('file2'):
             name_org = uploaded_file.name
-            print(name_org)
-            name_ext = os.path.splitext(name_org)[1]
             fs = FileSystemStorage(location='static/board/image')
-            name = fs.save(name_org + name_ext, uploaded_file.file)
-            filename = name_org.split('_')
+            name = fs.save(name_org, uploaded_file.file)
+            filename = name_org.split('.')[0].split('_')
+            print(filename)
             students = student.objects.filter(
                 Q(student_name=filename[1]) & Q(student_ID=filename[0]) & Q(board_ID=post_id)
             )
             if students.exists():
-                students.student_img = name_org
-                students.save()
+                student_row = student.objects.get(
+                    Q(student_name=filename[1]) & Q(student_ID=filename[0]) & Q(board_ID=post_id)
+                )
+                student_row.student_img = name_org
+                student_row.save()
 
     if title != "":
         if Board.objects.filter(id=post_id).exists():
@@ -217,6 +219,7 @@ def board_view(request):
     boards = get_object_or_404(Board, id=post_id)
     school = get_object_or_404(school_info, school_ID=school_id)
     students = student.objects.filter(board_ID=post_id)
+    final_yn = boards.final_yn
 
     if school_id == boards.school_name:
         board_auth = True
@@ -229,6 +232,7 @@ def board_view(request):
         'board_id': post_id,
         'students': students,
         'school': school,
+        'final_yn': final_yn,
     }
 
     response = render(request, 'board_template.html', context)
@@ -275,3 +279,12 @@ def board_download_view(request):
             response['Content-Disposition'] = 'attachment;filename*=UTF-8\'\'%s' % quote_file_url
             return response
         raise Http404
+
+# 게시글 최종완료
+def board_final(request):
+    post_id = request.GET['board_id']
+    boards = Board.objects.get(id=post_id)
+    boards.final_yn = 1
+    boards.save()
+
+    return redirect('/board')

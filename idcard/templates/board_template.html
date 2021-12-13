@@ -20,7 +20,11 @@
         <th height="50" colspan="3">학  생  증</th>
     </tr>
     <tr>
-        <td rowspan="2"><img src="{% static "{{ item.student_img }}" %}" alt=""></td>  <th width="70">이  름</th> <td>{{ item.student_name }}</td>
+        {% if item.student_img %}
+        <td rowspan="2"><img src="/static/board/image/{{ item.student_img}}" alt=""></td>  <th width="70">이  름</th> <td>{{ item.student_name }}</td>
+        {% else %}
+        <td rowspan="2"><img src="/static/board/image/default.png" alt=""></td>  <th width="70">이  름</th> <td>{{ item.student_name }}</td>
+        {% endif %}
     </tr>
     <tr>
         <th width="70">주  소</th><td>{{ item.detail_address }}</td>
@@ -78,12 +82,16 @@
 <!--<a href="/page/board/write.php"><button id="write_btn">글쓰기</button></a>-->
 <div style="position: relative;">
 <div style="position: absolute; right: 0px; bottom: 0px;">
-<form action="http://localhost/form.php">
-    <button id="final_btn">최종완료</button>
-    <button id ="confirm_btn">확인</button>
-    <button id ="save_btn">출력</button>
-</form>
-    <a href="/board_edit?board_id={{ board_id }}"><button id="edit_btn">수정</button></a>
+    {% if not final_yn %}
+        <a href="/board_final?board_id={{ board_id }}"><button id="final_btn">최종완료</button></a>
+    {% endif %}
+    <a href="/board"><button id ="confirm_btn">확인</button></a>
+    {% if final_yn %}
+        <button id ="save_btn" onclick="print()">출력</button>
+    {% endif %}
+    {% if not final_yn %}
+        <a href="/board_edit?board_id={{ board_id }}"><button id="edit_btn">수정</button></a>
+    {% endif %}
 </div>
 </div>
 </body>

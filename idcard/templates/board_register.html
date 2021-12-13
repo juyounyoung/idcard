@@ -46,7 +46,7 @@
     </div>
     <div id="register_area2">
 
-    <form action="/board_insert" id="frm" method="post">{% csrf_token %}
+    <form action="/board_insert" id="frm" method="post" enctype="multipart/form-data">{% csrf_token %}
         <input type="hidden" id="title" name="title">
         <input type="hidden" id="school_name" name="school_name">
         <input type="hidden" id="board_id2" name="board_id2" value="{{ board_id }}">
@@ -150,12 +150,7 @@ function Tabs() { var bindAll = function() { var menuElements = document.querySe
       {% if message %}<script language="javascript">alert('{{ message }}')</script>{% endif %}
       {% endfor %}
     <script type="text/javascript">
-        var reg = document.getElementById('register_btn');
-        reg.addEventListener('click', function(){
-            document.getElementById('title').value = document.getElementById('register_title').value;
-            console.log(document.getElementById('title').value);
-            document.getElementById('frm').submit();
-        })
+
         let file = document.getElementById("file1");
         let back = document.getElementById("file2");
 
@@ -172,6 +167,13 @@ function Tabs() { var bindAll = function() { var menuElements = document.querySe
           }
           back.files = dt.files;
         });
+
+        var reg = document.getElementById('register_btn');
+        reg.addEventListener('click', function(){
+            document.getElementById('title').value = document.getElementById('register_title').value;
+            console.log(document.getElementById('title').value);
+            document.getElementById('frm').submit();
+        })
     </script>
 </body>
 </html>

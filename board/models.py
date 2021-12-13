@@ -56,6 +56,7 @@ class Board(models.Model):
     hit_count = models.PositiveIntegerField(db_column='hit_count', default=0)
     filename = models.CharField(db_column='filename', max_length=64, null=True)
     del_yn = models.IntegerField(db_column='del_yn', default=0)
+    final_yn = models.IntegerField(db_column='final_yn', default=0)
 
     class Meta:
         managed = False
