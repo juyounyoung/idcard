@@ -179,15 +179,16 @@ def board_insert(request):
             for i in img_saver:
                 ilist.append(i.student_img)
 
-        students = student.objects.filter(board_ID=post_id)
-        if students.exists():
-            students.delete()
         for i in range(len(iname)):
             # 학생정보 입력 error
             if len(iname[i]) == 0 or len(irn[i]) == 0 or len(ipn[i]) == 0 \
                     or len(iid[i]) == 0 or len(iadd[i]) == 0:
                 messages.warning(request, '학생필수정보가 입력되지 않은 행이 존재합니다.')
-                # return redirect('/board')
+                return redirect(request.META.get('HTTP_REFERER'))
+
+        students = student.objects.filter(board_ID=post_id)
+        if students.exists():
+            students.delete()
 
         for i in range(len(iname)):
             if student.objects.filter(Q(school_ID=school_id) & Q(student_ID=iid[i]) & Q(board_ID=post_id)).exists():
@@ -299,12 +300,34 @@ def board_edit(request):
     img_cnt = 0
     if students.exists():
         img_st = students.exclude(Q(student_img__isnull=True) | Q(student_img__exact=''))
+        img_cnt = img_st.count()
 
+
+
+    if request.FILES.get('excelfile') is not None:
+        students = []
+        excel_file = request.FILES.get('excelfile')
+        fs = FileSystemStorage(location='static/board/xlsx')
+        name = fs.save(excel_file.name, excel_file)
+
+        sheets = load_workbook(excel_file, read_only=True).sheetnames
+        for sheet in sheets:
+            table1 = pd.read_excel(excel_file, sheet_name=sheet, header=0)
+            for r in range(0, table1.index.stop):
+                srow = student()
+                srow.student_group = sheet
+                srow.student_name = table1.iat[r, 1]
+                srow.student_ID = table1.iat[r, 2]
+                srow.student_rn = table1.iat[r, 3]
+                srow.student_phone = table1.iat[r, 4]
+                srow.detail_address = table1.iat[r, 5]
+                srow.board_ID = post_id
+                students.append(srow)
     context = {
         'boards': boards,
         'board_id': post_id,
         'students': students,
-        'img_cnt': img_st.count(),
+        'img_cnt': img_cnt,
     }
 
     return render(request, 'board_register.html', context)
