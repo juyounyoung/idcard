@@ -162,27 +162,38 @@ li{
     margin-left :20%;
     margin-top : 25px;
 }
+
+#info_img{
+	font-weight: bold;
+    font-size: 15px;
+    margin-left :20%;
+    margin-top : 25px;
+}
 /*수기 등록 영역*/
 #plus_area{
     padding-left: 78%;
 }
-#delete_btn{
-    margin-left:5px;
+.delete_btn{
+   margin-right:5px;
+    padding:0px 5px 0px 5px;
 }
 .inputname{
     width : 70px;
 }
 .inputid{
-    width : 100px;
+    width : 90px;
 }
 .inputrn{
-    width : 110px;
+    width : 90px;
+}
+.inputgroup{
+    width : 20px;
 }
 .inputadd{
-    width : 120px;
+    width : 110px;
 }
 .inputpn{
-    width : 120px;
+    width : 100px;
 }
 
 .container{
@@ -256,12 +267,37 @@ img{
     height:150px;
 }
 /*board_template.html style*/
+#div_btn{
+ margin:5px 70px 10px 0px;
+}
 #final_btn{
     padding:1.5px 5px 1.5px 5px;
     margin-top:30px;
     font-size:13px;
     font-weight: bold;
 }
+#confirm_btn{
+    padding:1.5px 5px 1.5px 5px;
+    margin-top:30px;
+    font-size:13px;
+    font-weight: bold;
+}
+#save_btn{
+    padding:1.5px 5px 1.5px 5px;
+    margin-top:30px;
+    font-size:13px;
+    font-weight: bold;
+}
+
+#edit_btn{
+    padding:1.5px 5px 1.5px 5px;
+    margin-top:30px;
+    font-size:13px;
+    font-weight: bold;
+}
+
+
+
 #btn_area2{
     width : 900px;
     position: absolute;

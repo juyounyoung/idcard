@@ -12,5 +12,5 @@ urlpatterns = [
     path('pw_edit', views.pw_edit, name='pw_edit'),
     path('board_final', views.board_final, name='board_final'),
 
-    # path('post/<int:post_id>', views.detail, name='detail')
+    #path('post/<int:post_id>', views.detail, name='detail')
 ]

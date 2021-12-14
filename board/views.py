@@ -22,13 +22,13 @@ from django.contrib.auth.forms import PasswordChangeForm
 from .forms import CustomPasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 
+
 # Create your views here.
 # @login_message_required
 def login(request):
     if request.method == 'POST':
         username2 = request.POST['school_id']
         password2 = request.POST['password']
-
 
         if Users_user.objects.filter(school_ID=username2).exists():
             getUser = Users_user.objects.get(school_ID=username2)
@@ -60,7 +60,7 @@ def login(request):
     return render(request, 'login.html')
 
 
-#비밀번호 변경 팝업창(미완성)
+# 비밀번호 변경 팝업창(미완성)
 def pw_edit(request):
     if request.method == 'POST':
         password_change_form = CustomPasswordChangeForm(request, request.POST)
@@ -81,7 +81,7 @@ def pw_edit(request):
                 getUser.password = new_password1
                 getUser.save()
             else:
-                messages.warning(request,'새 비밀번호를 다시 확인해주세요')
+                messages.warning(request, '새 비밀번호를 다시 확인해주세요')
                 return render(request, 'pw_edit.html', context)
         else:
             messages.warning(request, '기존 비밀번호를 다시 확인해주세요')
@@ -94,23 +94,25 @@ def pw_edit(request):
 
     return render(request, 'pw_edit.html', {'password_change_form': password_change_form})
 
+
 # 게시판 조회
 def board(request):
-    # 페이징 5개씩
+    # 페이징 10개씩
     all_boards = Board.objects.all()  # 정렬 기준 추가 필요
-    paginator = Paginator(all_boards, 5)
+    paginator = Paginator(all_boards, 10)
     page = int(request.GET.get('page', 1))
     boards = paginator.get_page(page)
 
     search_keyword = request.GET.get('search', '')
     if search_keyword:
         search_board_list = all_boards.filter(title__icontains=search_keyword)
-        paginator = Paginator(search_board_list, 5)
+        paginator = Paginator(search_board_list, 10)
         page = int(request.GET.get('page', 1))
         search_board_list = paginator.get_page(page)
-        return render(request, 'board_list.html', {'boards': search_board_list, 'search':search_keyword})
+        return render(request, 'board_list.html', {'boards': search_board_list, 'search': search_keyword})
 
     return render(request, 'board_list.html', {'boards': boards})
+
 
 def board_write(request):
     if Board.objects.all().exists():
@@ -157,6 +159,7 @@ def board_write(request):
 
     return render(request, 'board_register.html', context)
 
+
 # 게시판 글쓰기
 def board_insert(request):
     title = request.POST['title']
@@ -192,7 +195,8 @@ def board_insert(request):
 
         for i in range(len(iname)):
             if student.objects.filter(Q(school_ID=school_id) & Q(student_ID=iid[i]) & Q(board_ID=post_id)).exists():
-                student_row = student.objects.filter(Q(school_ID=school_id) & Q(student_ID=iid[i]) & Q(board_ID=post_id))
+                student_row = student.objects.filter(
+                    Q(school_ID=school_id) & Q(student_ID=iid[i]) & Q(board_ID=post_id))
                 student_row.update(
                     student_group=igroup[i],
                     student_name=iname[i],
@@ -267,7 +271,7 @@ def board_view(request):
     if school_id != 'admin' and boards.school_name != school_name:
         messages.warning(request, '해당 학교만 조회가 가능합니다')
         return redirect('/board')
-    
+
     students = student.objects.filter(board_ID=post_id)
     final_yn = boards.final_yn
 
@@ -292,6 +296,7 @@ def board_view(request):
 
     return response
 
+
 # 게시글 수정
 def board_edit(request):
     post_id = request.GET['board_id']
@@ -301,8 +306,6 @@ def board_edit(request):
     if students.exists():
         img_st = students.exclude(Q(student_img__isnull=True) | Q(student_img__exact=''))
         img_cnt = img_st.count()
-
-
 
     if request.FILES.get('excelfile') is not None:
         students = []
@@ -351,6 +354,7 @@ def board_download_view(request):
             response['Content-Disposition'] = 'attachment;filename*=UTF-8\'\'%s' % quote_file_url
             return response
         raise Http404
+
 
 # 게시글 최종완료
 def board_final(request):

@@ -25,10 +25,7 @@ SECRET_KEY = 'django-insecure-6-ql5v4lb3ew=%ka-8tu5hp!p1438=mchau!epdfl5(v5%t3m0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# 웹서버 연결으로 수정함.
-ALLOWED_HOSTS = ['*',
-                 ".ap-northeast-2.compute.amazonaws.com"
-                 ]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -83,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'studentidcard',
         'USER': 'root',
-        'PASSWORD': 'tn960321',
+        'PASSWORD': 'student2021^^',
         'HOST': '127.0.0.1',
         'PORT': '3306'
     }
