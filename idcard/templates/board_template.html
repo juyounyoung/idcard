@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{% static 'css/board.css' %}">
     <title>학생증사전등록시스템 게시판</title>
 </head>
+{% if conf_yn %}
 <script language="javascript">
     function confirmFinal() {
         var res = confirm("이미지 정보 누락되었습니다. 최종완료 하시겠습니까?");
@@ -16,6 +17,13 @@
         }
     }
 </script>
+{% else %}
+<script language="javascript">
+    function confirmFinal() {
+        return true;
+    }
+</script>
+{% endif %}
 <body>
 <h2>임시 학생증 템플릿</h2>
 

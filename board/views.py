@@ -282,6 +282,11 @@ def board_view(request):
 
     students = student.objects.filter(board_ID=post_id).order_by('student_ID')
 
+    # 최종완료 버튼 confirm
+    conf_yn = 0
+    if student.objects.filter(Q(student_img__isnull=True) | Q(student_img__exact='')).exists():
+        conf_yn = 1
+
     # 최종완료 권한
     if school_id == 'admin':
         admin_yn = 1
@@ -302,6 +307,7 @@ def board_view(request):
         'school': school,
         'final_yn': final_yn,
         'admin_yn': admin_yn,
+        'conf_yn': conf_yn,
     }
 
     response = render(request, 'board_template.html', context)
