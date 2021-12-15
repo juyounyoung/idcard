@@ -6,6 +6,16 @@
     <link rel="stylesheet" href="{% static 'css/board.css' %}">
     <title>학생증사전등록시스템 게시판</title>
 </head>
+<script language="javascript">
+    function confirmFinal() {
+        var res = confirm("이미지 정보 누락되었습니다. 최종완료 하시겠습니까?");
+        if (res) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
 <body>
 <h2>임시 학생증 템플릿</h2>
 
@@ -53,7 +63,9 @@
 <div style="position: relative;">
 <div id = "div_btn" style="position: absolute; right: 0px; bottom: 0px;">
     {% if not final_yn %}
-        <a href="/board_final?board_id={{ board_id }}"><button id="final_btn">최종완료</button></a>
+        {% if not admin_yn %}
+        <a onclick="return confirmFinal()" href="/board_final?board_id={{ board_id }}"><button id="final_btn">최종완료</button></a>
+        {% endif %}
     {% endif %}
     <a href="/board"><button id ="confirm_btn">확인</button></a>
     {% if final_yn %}

@@ -60,7 +60,7 @@ def login(request):
     return render(request, 'login.html')
 
 
-# 비밀번호 변경 팝업창(미완성)
+# 비밀번호 변경 팝업창
 def pw_edit(request):
     if request.method == 'POST':
         password_change_form = CustomPasswordChangeForm(request, request.POST)
@@ -98,14 +98,15 @@ def pw_edit(request):
 # 게시판 조회
 def board(request):
     # 페이징 10개씩
-    all_boards = Board.objects.all()  # 정렬 기준 추가 필요
+    all_boards = Board.objects.all().order_by('-id')
     paginator = Paginator(all_boards, 10)
     page = int(request.GET.get('page', 1))
     boards = paginator.get_page(page)
 
+    # 검색어로 list filtering
     search_keyword = request.GET.get('search', '')
     if search_keyword:
-        search_board_list = all_boards.filter(title__icontains=search_keyword)
+        search_board_list = all_boards.filter(title__icontains=search_keyword).order_by('-id')
         paginator = Paginator(search_board_list, 10)
         page = int(request.GET.get('page', 1))
         search_board_list = paginator.get_page(page)
@@ -129,6 +130,7 @@ def board_write(request):
         messages.warning(request, '게시글은 하나씩만 작성 가능합니다')
         return redirect('/board')
 
+    # 테이블에 리스트업하기 위한 컨테이너
     slist = []
 
     if request.FILES.get('excelfile') is not None:
@@ -175,6 +177,7 @@ def board_insert(request):
     ipn = request.POST.getlist('inputpn')
     igroup = request.POST.getlist('inputgroup')
 
+    # ilist == 이미 업로드되어있는 이미지정보 저장할 List
     ilist = []
     if len(iname) > 0:
         img_saver = student.objects.exclude(Q(student_img__isnull=True) | Q(student_img__exact=''))
@@ -187,6 +190,9 @@ def board_insert(request):
             if len(iname[i]) == 0 or len(irn[i]) == 0 or len(ipn[i]) == 0 \
                     or len(iid[i]) == 0 or len(iadd[i]) == 0:
                 messages.warning(request, '학생필수정보가 입력되지 않은 행이 존재합니다.')
+                return redirect(request.META.get('HTTP_REFERER'))
+            if len(irn[i]) < 14 :
+                messages.warning(request, '학생 주민등록번호 형식이 맞지 않습니다. oooooo-ooooooo')
                 return redirect(request.META.get('HTTP_REFERER'))
 
         students = student.objects.filter(board_ID=post_id)
@@ -223,7 +229,8 @@ def board_insert(request):
             fs = FileSystemStorage(location='static/board/image')
             name = fs.save(name_org, uploaded_file.file)
             filename = name_org.split('.')[0].split('_')
-            print(filename)
+
+            # # 이미지 파일 학번_이름 일 경우 student 로우와 맵핑
             students = student.objects.filter(
                 Q(student_name=filename[1]) & Q(student_ID=filename[0]) & Q(board_ID=post_id)
             )
@@ -236,7 +243,8 @@ def board_insert(request):
     if len(ilist) > 0:
         for i in ilist:
             filename = i.split('.')[0].split('_')
-            print(filename)
+
+            # 이미지 파일 학번_이름 일 경우 student 로우와 맵핑
             students = student.objects.filter(
                 Q(student_name=filename[1]) & Q(student_ID=filename[0]) & Q(board_ID=post_id)
             )
@@ -272,7 +280,13 @@ def board_view(request):
         messages.warning(request, '해당 학교만 조회가 가능합니다')
         return redirect('/board')
 
-    students = student.objects.filter(board_ID=post_id)
+    students = student.objects.filter(board_ID=post_id).order_by('student_ID')
+
+    # 최종완료 권한
+    if school_id == 'admin':
+        admin_yn = 1
+    else:
+        admin_yn = 0
     final_yn = boards.final_yn
 
     if school_id == boards.school_name:
@@ -287,10 +301,12 @@ def board_view(request):
         'students': students,
         'school': school,
         'final_yn': final_yn,
+        'admin_yn': admin_yn,
     }
 
     response = render(request, 'board_template.html', context)
 
+    # 게시글 조회수 증가
     boards.hit_count += 1
     boards.save()
 
@@ -302,6 +318,8 @@ def board_edit(request):
     post_id = request.GET['board_id']
     boards = get_object_or_404(Board, id=post_id)
     students = student.objects.filter(board_ID=post_id)
+
+    # 업로드된 학생 사진파일 count
     img_cnt = 0
     if students.exists():
         img_st = students.exclude(Q(student_img__isnull=True) | Q(student_img__exact=''))
@@ -334,26 +352,6 @@ def board_edit(request):
     }
 
     return render(request, 'board_register.html', context)
-
-
-# 게시글 첨부파일 다운로드 한글명 인코딩
-def board_download_view(request):
-    post_id = request.GET['board_id']
-    boards = get_object_or_404(Board, id=post_id)
-    url = boards.upload_files.url[1:]
-    print(type(url))
-    print(url)
-    file_url = urllib.parse.unquote(url)
-
-    if os.path.exists(file_url):
-        with open(file_url, 'rb') as fh:
-            # quote_file_url = urllib.parse.quote(file_url.encode('utf-8'))
-            quote_file_url = urllib.parse.quote(boards.filename.encode('utf-8'))
-            response = HttpResponse(fh.read(), content_type=mimetypes.guess_type(file_url)[0])
-            # response['Content-Disposition'] = 'attachment;filename*=UTF-8\'\'%s' % quote_file_url[29:]
-            response['Content-Disposition'] = 'attachment;filename*=UTF-8\'\'%s' % quote_file_url
-            return response
-        raise Http404
 
 
 # 게시글 최종완료
