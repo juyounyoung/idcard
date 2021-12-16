@@ -79,8 +79,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'studentidcard',
-        'USER': 'root',
-        'PASSWORD': 'root',
+        'USER': 'deploy',
+        'PASSWORD': 'student2021^^',
         'HOST': '127.0.0.1',
         'PORT': '3306'
     }
