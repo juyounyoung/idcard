@@ -276,11 +276,15 @@ def board_view(request):
     school = get_object_or_404(school_info, school_ID=school_id)
 
     # 조회 권한
+    students = student.objects.filter(board_ID=post_id).order_by('student_ID')
+    if students.exists():
+        school = get_object_or_404(school_info, school_ID=students.first().school_ID)
+
     if school_id != 'admin' and boards.school_name != school_name:
         messages.warning(request, '해당 학교만 조회가 가능합니다')
         return redirect('/board')
 
-    students = student.objects.filter(board_ID=post_id).order_by('student_ID')
+    #students = student.objects.filter(board_ID=post_id).order_by('student_ID')
 
     # 최종완료 버튼 confirm
     conf_yn = 0
