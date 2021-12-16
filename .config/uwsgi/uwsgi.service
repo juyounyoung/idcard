@@ -1,5 +1,5 @@
 [Unit]
-Description=uWSGI service
+Description=uWSGI service
 After=syslog.target
 
 [Service]
@@ -12,4 +12,4 @@ StandardError=syslog
 NotifyAccess=all
 
 [Install]
-WantedBy=multi-suer.target[D[D[D[D[D[D[D[D[D[D[Du[2user.target
+WantedBy=multi-suer.target
