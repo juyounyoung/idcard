@@ -39,9 +39,9 @@
     </tr>
     <tr>
         {% if item.student_img %}
-        <td rowspan="3"><img src="/static/board/image/{{ item.student_img}}" alt=""></td>  <th width="60">이  름</th> <td>{{ item.student_name }}  </td>
+        <td rowspan="3"><img src="/srv/idcard/static/board/image/{{ item.student_img}}" alt=""></td>  <th width="60">이  름</th> <td>{{ item.student_name }}  </td>
         {% else %}
-        <td rowspan="3"><img src="/static/board/image/default.png" alt=""></td>  <th width="60">이  름</th> <td>{{ item.student_name }} </td>
+        <td rowspan="3"><img src="/srv/idcard/static/board/image/default.png" alt=""></td>  <th width="60">이  름</th> <td>{{ item.student_name }} </td>
         {% endif %}
     </tr>
     <tr>
