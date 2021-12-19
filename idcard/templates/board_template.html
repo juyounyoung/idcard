@@ -25,7 +25,7 @@
 </script>
 {% endif %}
 <body>
-<p>임시 학생증 템플릿</p>
+<h2>임시 학생증 템플릿</h2>
 
 <div style="overflow:auto;">
 </div>
@@ -39,9 +39,9 @@
     </tr>
     <tr>
         {% if item.student_img %}
-        <td rowspan="3"><img src="/srv/idcard/static/board/image/{{ item.student_img}}" alt=""></td>  <th width="60">이  름</th> <td>{{ item.student_name }}  </td>
+        <td rowspan="3"><img src="http://ec2-13-125-215-164.ap-northeast-2.compute.amazonaws.com/srv/idcard/static/board/image/{{ item.student_img}}" alt=""></td>  <th width="60">이  름</th> <td>{{ item.student_name }}  </td>
         {% else %}
-        <td rowspan="3"><img src="/srv/idcard/static/board/image/default.png" alt=""></td>  <th width="60">이  름</th> <td>{{ item.student_name }} </td>
+        <td rowspan="3"><img src="http://ec2-13-125-215-164.ap-northeast-2.compute.amazonaws.com/srv/idcard/static/board/image/default.png" alt=""></td>  <th width="60">이  름</th> <td>{{ item.student_name }} </td>
         {% endif %}
     </tr>
     <tr>
