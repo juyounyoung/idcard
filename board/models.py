@@ -52,7 +52,7 @@ class Board(models.Model):
     school_name = models.CharField(db_column='school_name', max_length=10, null=False)
     # reporting_date = models.DateTimeField(db_column='reporting_date', auto_now_add=True)
     created_date = models.DateTimeField(db_column='created_date', auto_now_add=True)
-    modified_date = models.DateTimeField(db_column='modified_date', auto_now=True)
+    modified_date = models.DateTimeField(db_column='modified_date', blank=True)
     hit_count = models.PositiveIntegerField(db_column='hit_count', default=0)
     filename = models.CharField(db_column='filename', max_length=64, null=True)
     del_yn = models.IntegerField(db_column='del_yn', default=0)

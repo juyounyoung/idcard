@@ -259,6 +259,8 @@ def board_insert(request):
         if Board.objects.filter(id=post_id).exists():
             row = Board.objects.get(id=post_id)
             row.title = title
+            # 수정 modified date update
+            row.modified_date = datetime.datetime.now()
             row.save()
         else:
             rows = Board.objects.create(title=title, school_name=school_name)
@@ -360,6 +362,8 @@ def board_edit(request):
         'students': students,
         'img_cnt': img_cnt,
     }
+
+
 
     return render(request, 'board_register.html', context)
 
