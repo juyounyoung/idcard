@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{% static 'css/board.css' %}">
     <title>학생증사전등록시스템 게시판</title>
 </head>
-<%response.setHeader("Access-Control-Allow-Origin","*"); %>
+{%response.setHeader("Access-Control-Allow-Origin","*"); %}
 {% if conf_yn %}
 <script language="javascript">
     function confirmFinal() {
